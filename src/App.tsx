@@ -1,8 +1,8 @@
-import * as React from 'react';
+import React from 'react';
 import './App.css';
 
 function App() {
-    const brd = [
+    const Board = [
         [
             { key: 1, id: '' },
             { key: 2, id: '' },
@@ -19,10 +19,10 @@ function App() {
             { key: 9, id: '' },
         ],
     ];
-    const [board, setBoard] = React.useState([...brd]);
+    const [board, setBoard] = React.useState([...Board]);
     const [player, setPlayer] = React.useState('X');
 
-    const generateBoard = () => {
+    const GenerateBoard = () => {
         return board.map((elem, index) => (
             <div key={index} className="rows">
                 {elem.map((elem, idx) => (
@@ -33,10 +33,10 @@ function App() {
             </div>
         ));
     };
-
     const boxOnClick = (e: React.MouseEvent<HTMLDivElement>) => {
         const id = e.currentTarget.id;
         const newBoard = [...board];
+
         board.forEach((elem, index) =>
             elem.forEach((item, i) => {
                 if (item.key.toString() === id) {
@@ -51,100 +51,36 @@ function App() {
                 return setBoard([...newBoard]);
             }),
         );
-        gameControl();
+        BoarCheck();
     };
 
-    const boardRowCheck = () => {
-        board.forEach((elem) => {
-            let countX = 0;
-            let countO = 0;
-            elem.forEach((item) => {
-                if (item.id === 'X') {
-                    countX++;
-                } else if (item.id === 'O') {
-                    countO++;
-                }
-            });
-
-            winnerCheck(countX, countO, 3);
-        });
-    };
-
-    const boardColumnCheck = () => {
+    const BoarCheck = () => {
+        GetWinner(board[0][0].id, board[1][1].id, board[2][2].id);
+        GetWinner(board[0][2].id, board[1][1].id, board[2][0].id);
         board.forEach((elem, index) => {
-            let countX = 0;
-            let countO = 0;
-            elem.forEach((item, idx) => {
-                if (board[idx][index].id === 'X') {
-                    countX++;
-                } else if (board[idx][index].id === 'O') {
-                    countO++;
-                }
-            });
-
-            winnerCheck(countX, countO, 3);
+            GetWinner(elem[0].id, elem[1].id, elem[2].id);
+            GetWinner(board[0][index].id, board[1][index].id, board[2][index].id);
         });
     };
 
-    const boardDiagnolCheck = (xOrO: string) => {
-        let countX = 0;
-        let countO = 0;
-        let checkIndex = 0;
-        let checkInverse = 0;
-        let inverseIndex = 2;
-
-        board.forEach((elem, index) => {
-            elem.forEach((item, idx) => {
-                if (item.id === xOrO && idx === checkIndex && index === checkIndex) {
-                    checkIndex++;
-                } else if (item.id === xOrO && idx === inverseIndex && index === checkInverse) {
-                    inverseIndex--;
-                    checkInverse++;
-                }
-            });
-        });
-        if (checkInverse >= checkIndex) {
-            if (xOrO === 'X') {
-                countX = checkInverse;
-            } else if (xOrO === 'O') {
-                countO = checkInverse;
+    const GetWinner = (firstElem: string, secondElem: string, thirdElem: string) => {
+        if (firstElem === secondElem && secondElem === thirdElem && secondElem !== '') {
+            if (firstElem === 'X') {
+                alert('X is the winner');
+            } else {
+                alert('O is the winner');
             }
-        } else if (checkInverse <= checkIndex) {
-            if (xOrO === 'X') {
-                countX = checkIndex;
-            } else if (xOrO === 'O') {
-                countO = checkIndex;
-            }
-        }
-
-        winnerCheck(countX, countO, 3);
-    };
-
-    const winnerCheck = (countX: number, countO: number, howMuchXorO: number) => {
-        if (countX === howMuchXorO) {
-            alert('won X');
-            gameReset();
-        } else if (countO === howMuchXorO) {
-            alert('win O');
             gameReset();
         }
     };
 
     const gameReset = () => {
-        setPlayer('X');
-        setBoard([...brd]);
+        setPlayer('');
+        setBoard([...Board]);
     };
-
-    const gameControl = () => {
-        boardRowCheck();
-        boardColumnCheck();
-        boardDiagnolCheck('X');
-        boardDiagnolCheck('O');
-    };
-
     return (
         <div className="App">
-            <div className="board">{generateBoard()}</div>
+            <div className="board">{GenerateBoard()}</div>
             <div className="players">Turn for player: {player}</div>
             <button className="gameResetBtn" onClick={gameReset}>
                 Reset The Game
