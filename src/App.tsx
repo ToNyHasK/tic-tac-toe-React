@@ -89,7 +89,6 @@ function App() {
     const boardDiagnolCheck = (xOrO: string) => {
         let countX = 0;
         let countO = 0;
-        let count = 0;
         let checkIndex = 0;
         let checkInverse = 0;
         let inverseIndex = 2;
@@ -97,20 +96,27 @@ function App() {
         board.forEach((elem, index) => {
             elem.forEach((item, idx) => {
                 if (item.id === xOrO && idx === checkIndex && index === checkIndex) {
-                    count++;
                     checkIndex++;
                 } else if (item.id === xOrO && idx === inverseIndex && index === checkInverse) {
-                    count++;
                     inverseIndex--;
                     checkInverse++;
                 }
             });
         });
-        if (xOrO === 'X') {
-            countX = count;
-        } else if (xOrO === 'O') {
-            countO = count;
+        if (checkInverse >= checkIndex) {
+            if (xOrO === 'X') {
+                countX = checkInverse;
+            } else if (xOrO === 'O') {
+                countO = checkInverse;
+            }
+        } else if (checkInverse <= checkIndex) {
+            if (xOrO === 'X') {
+                countX = checkIndex;
+            } else if (xOrO === 'O') {
+                countO = checkIndex;
+            }
         }
+
         winnerCheck(countX, countO, 3);
     };
 
