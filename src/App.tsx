@@ -4,19 +4,19 @@ import './App.css';
 function App() {
     const brd = [
         [
-            { key: 1, id: '', disabled: false },
-            { key: 2, id: '', disabled: false },
-            { key: 3, id: '', disabled: false },
+            { key: 1, id: '' },
+            { key: 2, id: '' },
+            { key: 3, id: '' },
         ],
         [
-            { key: 4, id: '', disabled: false },
-            { key: 5, id: '', disabled: false },
-            { key: 6, id: '', disabled: false },
+            { key: 4, id: '' },
+            { key: 5, id: '' },
+            { key: 6, id: '' },
         ],
         [
-            { key: 7, id: '', disabled: false },
-            { key: 8, id: '', disabled: false },
-            { key: 9, id: '', disabled: false },
+            { key: 7, id: '' },
+            { key: 8, id: '' },
+            { key: 9, id: '' },
         ],
     ];
     const [board, setBoard] = React.useState([...brd]);
@@ -26,7 +26,7 @@ function App() {
         return board.map((elem, index) => (
             <div key={index} className="rows">
                 {elem.map((elem, idx) => (
-                    <div key={idx} className="box" id={`${elem.key}`} onClick={boxOnClick}>
+                    <div key={idx} className={`box ${elem.id && 'disabled'}`} id={`${elem.key}`} onClick={boxOnClick}>
                         {elem.id}
                     </div>
                 ))}
@@ -36,9 +36,9 @@ function App() {
 
     const boxOnClick = (e: React.MouseEvent<HTMLDivElement>) => {
         const id = e.currentTarget.id;
+        let newBoard = [...board];
         board.map((elem, index) =>
             elem.filter((item, i) => {
-                let newBoard = [...board];
                 if (item.key.toString() === id) {
                     if (player === 'X') {
                         newBoard[index][i].id = 'X';
@@ -84,42 +84,35 @@ function App() {
         }
     };
 
-    const boardDiagnolCheck = () => {
+    const boardDiagnolCheck = (xOrO: string) => {
         let countX = 0;
         let countO = 0;
-
-        let checkIndeX = 0;
-        let checkInverseX = 0;
-        let inverseIndeX = 2;
-
-        let checkIndeO = 0;
-        let inverseIndeO = 2;
-        let checkInverseO = 0;
+        let count = 0;
+        let checkIndex = 0;
+        let checkInverse = 0;
+        let inverseIndex = 2;
 
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
-                if (board[i][j].id === 'X' && j === checkIndeX && i === checkIndeX) {
-                    countX++;
-                    checkIndeX++;
-                } else if (board[i][j].id === 'X' && j === inverseIndeX && i === checkInverseX) {
-                    countX++;
-                    inverseIndeX--;
-                    checkInverseX++;
-                }
-                if (board[i][j].id === 'O' && j === checkIndeO && i === checkIndeO) {
-                    countO++;
-                    checkIndeO++;
-                } else if (board[i][j].id === 'O' && j === inverseIndeO && i === checkInverseO) {
-                    countO++;
-                    inverseIndeO--;
-                    checkInverseO++;
+                if (board[i][j].id === xOrO && j === checkIndex && i === checkIndex) {
+                    count++;
+                    checkIndex++;
+                } else if (board[i][j].id === xOrO && j === inverseIndex && i === checkInverse) {
+                    count++;
+                    inverseIndex--;
+                    checkInverse++;
                 }
             }
+        }
+        if (xOrO === 'X') {
+            countX = count;
+        } else if (xOrO === 'O') {
+            countO = count;
         }
         winnerCheck(countX, countO, 3);
     };
 
-    const winnerCheck = (countX: Number, countO: Number, howMuchXorO: Number) => {
+    const winnerCheck = (countX: number, countO: number, howMuchXorO: number) => {
         if (countX === howMuchXorO) {
             alert('won X');
             gameReset();
@@ -137,7 +130,8 @@ function App() {
     const gameControl = () => {
         boardRowCheck();
         boardColumnCheck();
-        boardDiagnolCheck();
+        boardDiagnolCheck('X');
+        boardDiagnolCheck('O');
     };
 
     return (
