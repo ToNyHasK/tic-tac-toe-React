@@ -36,9 +36,9 @@ function App() {
 
     const boxOnClick = (e: React.MouseEvent<HTMLDivElement>) => {
         const id = e.currentTarget.id;
-        let newBoard = [...board];
-        board.map((elem, index) =>
-            elem.filter((item, i) => {
+        const newBoard = [...board];
+        board.forEach((elem, index) =>
+            elem.forEach((item, i) => {
                 if (item.key.toString() === id) {
                     if (player === 'X') {
                         newBoard[index][i].id = 'X';
@@ -65,23 +65,25 @@ function App() {
                     countO++;
                 }
             });
+
             winnerCheck(countX, countO, 3);
         });
     };
 
     const boardColumnCheck = () => {
-        for (let i = 0; i < 3; i++) {
+        board.forEach((elem, index) => {
             let countX = 0;
             let countO = 0;
-            for (let j = 0; j < 3; j++) {
-                if (board[j][i].id === 'X') {
+            elem.forEach((item, idx) => {
+                if (board[idx][index].id === 'X') {
                     countX++;
-                } else if (board[j][i].id === 'O') {
+                } else if (board[idx][index].id === 'O') {
                     countO++;
                 }
-            }
+            });
+
             winnerCheck(countX, countO, 3);
-        }
+        });
     };
 
     const boardDiagnolCheck = (xOrO: string) => {
@@ -92,18 +94,18 @@ function App() {
         let checkInverse = 0;
         let inverseIndex = 2;
 
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
-                if (board[i][j].id === xOrO && j === checkIndex && i === checkIndex) {
+        board.forEach((elem, index) => {
+            elem.forEach((item, idx) => {
+                if (item.id === xOrO && idx === checkIndex && index === checkIndex) {
                     count++;
                     checkIndex++;
-                } else if (board[i][j].id === xOrO && j === inverseIndex && i === checkInverse) {
+                } else if (item.id === xOrO && idx === inverseIndex && index === checkInverse) {
                     count++;
                     inverseIndex--;
                     checkInverse++;
                 }
-            }
-        }
+            });
+        });
         if (xOrO === 'X') {
             countX = count;
         } else if (xOrO === 'O') {
