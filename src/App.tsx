@@ -1,47 +1,34 @@
 import * as React from 'react';
 import './App.css';
 import ShowBoard from './components/ShowBoard';
+import brd from './components/Board.Component';
 
 function App() {
-    const brd = [
-        [
-            { key: 1, id: '' },
-            { key: 2, id: '' },
-            { key: 3, id: '' },
-        ],
-        [
-            { key: 4, id: '' },
-            { key: 5, id: '' },
-            { key: 6, id: '' },
-        ],
-        [
-            { key: 7, id: '' },
-            { key: 8, id: '' },
-            { key: 9, id: '' },
-        ],
-    ];
-    const [board, setBoard] = React.useState([...brd]);
+    const [board, setBoard] = React.useState(brd);
     const [player, setPlayer] = React.useState('X');
+
+    React.useEffect(() => {
+        boarCheck();
+    }, [board]);
 
     const boxOnClick = (e: React.MouseEvent<HTMLDivElement>) => {
         const id = e.currentTarget.id;
-        const newBoard = [...board];
+        const newBoard = board.map((column) => column.map((row) => row));
 
-        board.forEach((elem, index) =>
+        newBoard.forEach((elem, index) =>
             elem.forEach((item, i) => {
                 if (item.key.toString() === id) {
                     if (player === 'X') {
-                        newBoard[index][i].id = 'X';
+                        newBoard[index][i] = { ...newBoard[index][i], id: 'X' };
                         setPlayer('O');
                     } else if (player === 'O') {
-                        newBoard[index][i].id = 'O';
+                        newBoard[index][i] = { ...newBoard[index][i], id: 'O' };
                         setPlayer('X');
                     }
                 }
-                return setBoard([...newBoard]);
+                return setBoard(newBoard);
             }),
         );
-        boarCheck();
     };
 
     const boarCheck = () => {
@@ -66,8 +53,7 @@ function App() {
 
     const gameReset = () => {
         setPlayer('X');
-
-        setBoard([...brd]);
+        setBoard(brd);
     };
     return (
         <div className="App">
