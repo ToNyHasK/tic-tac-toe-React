@@ -1,8 +1,9 @@
-import React from 'react';
+import * as React from 'react';
 import './App.css';
+import ShowBoard from './components/ShowBoard';
 
 function App() {
-    const Board = [
+    const brd = [
         [
             { key: 1, id: '' },
             { key: 2, id: '' },
@@ -19,20 +20,9 @@ function App() {
             { key: 9, id: '' },
         ],
     ];
-    const [board, setBoard] = React.useState([...Board]);
+    const [board, setBoard] = React.useState([...brd]);
     const [player, setPlayer] = React.useState('X');
 
-    const GenerateBoard = () => {
-        return board.map((elem, index) => (
-            <div key={index} className="rows">
-                {elem.map((elem, idx) => (
-                    <div key={idx} className={`box ${elem.id && 'disabled'}`} id={`${elem.key}`} onClick={boxOnClick}>
-                        {elem.id}
-                    </div>
-                ))}
-            </div>
-        ));
-    };
     const boxOnClick = (e: React.MouseEvent<HTMLDivElement>) => {
         const id = e.currentTarget.id;
         const newBoard = [...board];
@@ -51,19 +41,19 @@ function App() {
                 return setBoard([...newBoard]);
             }),
         );
-        BoarCheck();
+        boarCheck();
     };
 
-    const BoarCheck = () => {
-        GetWinner(board[0][0].id, board[1][1].id, board[2][2].id);
-        GetWinner(board[0][2].id, board[1][1].id, board[2][0].id);
+    const boarCheck = () => {
+        getWinner(board[0][0].id, board[1][1].id, board[2][2].id);
+        getWinner(board[0][2].id, board[1][1].id, board[2][0].id);
         board.forEach((elem, index) => {
-            GetWinner(elem[0].id, elem[1].id, elem[2].id);
-            GetWinner(board[0][index].id, board[1][index].id, board[2][index].id);
+            getWinner(elem[0].id, elem[1].id, elem[2].id);
+            getWinner(board[0][index].id, board[1][index].id, board[2][index].id);
         });
     };
 
-    const GetWinner = (firstElem: string, secondElem: string, thirdElem: string) => {
+    const getWinner = (firstElem: string, secondElem: string, thirdElem: string) => {
         if (firstElem === secondElem && secondElem === thirdElem && secondElem !== '') {
             if (firstElem === 'X') {
                 alert('X is the winner');
@@ -75,16 +65,13 @@ function App() {
     };
 
     const gameReset = () => {
-        setPlayer('');
-        setBoard([...Board]);
+        setPlayer('X');
+
+        setBoard([...brd]);
     };
     return (
         <div className="App">
-            <div className="board">{GenerateBoard()}</div>
-            <div className="players">Turn for player: {player}</div>
-            <button className="gameResetBtn" onClick={gameReset}>
-                Reset The Game
-            </button>
+            <ShowBoard board={board} player={player} gameReset={gameReset} boxOnClick={boxOnClick} />
         </div>
     );
 }
